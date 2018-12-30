@@ -28,7 +28,7 @@ from seki.git_cli import (
 )
 from seki.utils import find_in_environ_or_ask
 
-REPOSITORY_PATH = "/tmp/seki/run"
+REPOSITORY_PATH = "/tmp/seki"
 DRONE_PATH = REPOSITORY_PATH + "/.drone.yml"
 
 
@@ -40,11 +40,11 @@ def run(args):
         BITBUCKET_PASSWORD = find_in_environ_or_ask("BITBUCKET_PASSWORD")
 
         # Create Bitbucket repository if needed
-        clone_url = find_bitbucket_repository(BITBUCKET_USER, BITBUCKET_PASSWORD, BITBUCKET_EMAIL)
+        clone_url = find_bitbucket_repository(BITBUCKET_USER, BITBUCKET_PASSWORD, BITBUCKET_EMAIL, "seki")
         # Check if drone enable
-        if not drone_is_enabled(f"{BITBUCKET_USER}/run"):
+        if not drone_is_enabled(f"{BITBUCKET_USER}/seki"):
             # Enable drone
-            enable_drone_repository(f"{BITBUCKET_USER}/run")
+            enable_drone_repository(f"{BITBUCKET_USER}/seki")
         # Clone project
         repo = clone_repository(clone_url, REPOSITORY_PATH)
     else:
@@ -63,7 +63,7 @@ def run(args):
 
         checkout_branch(repo, branch_name_hash)
 
-        add_drone_cron(f"{BITBUCKET_USER}/run", branch_name_hash, cron)
+        add_drone_cron(f"{BITBUCKET_USER}/seki", branch_name_hash, cron)
     else:
         branch_name_hash = None
 
