@@ -4,13 +4,13 @@ from datetime import datetime
 from hashlib import md5
 from os.path import exists as folder_exists
 
-from seki.bitbucket import find_bitbucket_repository
-from seki.drone_cli import (
+from bitbucket import find_bitbucket_repository
+from drone_cli import (
     enable_drone_repository,
     add_drone_cron,
     drone_is_enabled
 )
-from seki.drone_template import (
+from drone_template import (
     dump_drone_yml,
     generate_drone_yml,
     get_template_params,
@@ -18,39 +18,56 @@ from seki.drone_template import (
     process_template,
     append_header_to_drone_yml
 )
-from seki.git_cli import (
+from git_cli import (
     get_repository,
     clone_repository,
     create_branch,
     checkout_branch,
     commit,
-    push_repository
+    push_repository,
+    get_repo_path_from_origin
 )
-from seki.utils import find_in_environ_or_ask
+from utils import (
+    check_requirements,
+    ask,
+    find_in_environ_or_ask
+)
+
 
 REPOSITORY_PATH = "/tmp/seki"
 DRONE_PATH = REPOSITORY_PATH + "/.drone.yml"
 
 
 def run(args):
-    # Check if run project exists
+    # Check if project exists
     if not folder_exists(REPOSITORY_PATH):
-        BITBUCKET_USER = find_in_environ_or_ask("BITBUCKET_USER")
-        BITBUCKET_EMAIL = find_in_environ_or_ask("BITBUCKET_EMAIL")
-        BITBUCKET_PASSWORD = find_in_environ_or_ask("BITBUCKET_PASSWORD")
+        result = ask("Solutions:", options=[
+                f"Manually create git project in: '{REPOSITORY_PATH}'. When done select this option.",
+                "Let seki create project in Bitbucket"
+            ])
 
-        # Create Bitbucket repository if needed
-        clone_url = find_bitbucket_repository(BITBUCKET_USER, BITBUCKET_PASSWORD, BITBUCKET_EMAIL, "seki")
+        if result == 1:
+            BITBUCKET_USER = find_in_environ_or_ask("BITBUCKET_USER")
+            BITBUCKET_EMAIL = find_in_environ_or_ask("BITBUCKET_EMAIL")
+            BITBUCKET_PASSWORD = find_in_environ_or_ask("BITBUCKET_PASSWORD")
+
+            # Create Bitbucket repository if needed
+            clone_url = find_bitbucket_repository(BITBUCKET_USER, BITBUCKET_PASSWORD, BITBUCKET_EMAIL, "seki")
+            # Clone project
+            repo = clone_repository(clone_url, REPOSITORY_PATH)
+        elif result == 2:
+            repo = get_repository(REPOSITORY_PATH)
+
+        remote_repo_path = get_repo_path_from_origin(repo)
+
         # Check if drone enable
-        if not drone_is_enabled(f"{BITBUCKET_USER}/seki"):
+        if not drone_is_enabled(remote_repo_path):
             # Enable drone
-            enable_drone_repository(f"{BITBUCKET_USER}/seki")
-        # Clone project
-        repo = clone_repository(clone_url, REPOSITORY_PATH)
+            enable_drone_repository(remote_repo_path)
     else:
         repo = get_repository(REPOSITORY_PATH)
 
-        checkout_branch(repo, "master")
+    checkout_branch(repo, "master")
 
     cron = args.get("cron", False)
 
@@ -63,9 +80,7 @@ def run(args):
 
         checkout_branch(repo, branch_name_hash)
 
-        add_drone_cron(f"{BITBUCKET_USER}/seki", branch_name_hash, cron)
-    else:
-        branch_name_hash = None
+        add_drone_cron(remote_repo_path, branch_name_hash, cron)
 
     if args["template"]:
         params = get_template_params(args["template"])
@@ -84,10 +99,15 @@ def run(args):
 
     commit(repo, args["args"])
 
-    push_repository(repo, upstream=branch_name_hash)
+    if cron:
+        push_repository(repo, upstream=branch_name_hash)
+    else:
+        push_repository(repo)
 
 
 def main():
+    check_requirements()
+
     parser = ArgumentParser()
 
     shared_parser = parser.add_argument_group("shared")

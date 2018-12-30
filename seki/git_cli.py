@@ -1,4 +1,5 @@
 from git import Repo
+from urllib.parse import urlparse
 
 
 def get_repository(folder):
@@ -39,3 +40,14 @@ def push_repository(repo, upstream=None):
         repo.git.push("origin", upstream)
     else:
         repo.git.push()
+
+
+def get_repo_path_from_origin(repo):
+    repo_url = repo.remotes.origin.url
+    path = urlparse(repo_url).path
+    path = path.rsplit(".", 1)[0]
+
+    if path.startswith("/"):
+        path = path[1:]
+
+    return path
