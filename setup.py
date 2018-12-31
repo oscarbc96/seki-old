@@ -24,9 +24,10 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRES = [
-    "requests",
-    "pybitbucket",
-    "GitPython"
+    "click",
+    "GitPython",
+    "pyyaml",
+    "pybitbucket"
 ]
 
 # What packages are optional?
@@ -107,9 +108,9 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    py_modules=["seki"],
+    packages=find_packages(),
     entry_points={
-        "console_scripts": ["seki=seki.seki:main"],
+        "console_scripts": ["seki=seki.cli:cli"],
     },
     install_requires=REQUIRES,
     extras_require={
