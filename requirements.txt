@@ -6,14 +6,16 @@
 #
 certifi==2018.11.29       # via requests
 chardet==3.0.4            # via requests
+click==7.0
 future==0.17.1            # via pybitbucket
 gitdb2==2.0.5             # via gitpython
 gitpython==2.1.11
 idna==2.8                 # via requests
 oauthlib==2.1.0           # via pybitbucket, requests-oauthlib
 pybitbucket==0.12.0
+pyyaml==3.13
 requests-oauthlib==0.8.0  # via pybitbucket
-requests==2.21.0
+requests==2.21.0          # via pybitbucket, requests-oauthlib
 simplejson==3.16.0        # via pybitbucket, uritemplate
 six==1.12.0               # via pybitbucket
 smmap2==2.0.5             # via gitdb2
