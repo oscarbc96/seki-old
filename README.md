@@ -5,7 +5,7 @@
 [![Supported python versions](https://img.shields.io/pypi/pyversions/seki.svg)](https://github.com/oscarbc96/seki)
 [![License](https://img.shields.io/github/license/oscarbc96/seki.svg)](https://github.com/oscarbc96/seki)
 
-Seki has been created to automated
+Seki has been created to automatically generate `drone.yml` files to run security tools in the cloud.
 
 ## Related projects
 
@@ -42,7 +42,7 @@ Usage: seki run [OPTIONS] IMAGE
 
 To use the telegram option the following [secrets](#Secrets) must be set:
 `telegram_token`: telegram token from [telegram developer center](https://core.telegram.org/bots/api)
-`telegram_to`: telegram user id (can be requested from the @userinfobot inside Telegram)
+`telegram_to`: telegram user id (can be requested from the `@userinfobot` inside Telegram)
 
 #### Examples
 
@@ -119,7 +119,7 @@ steps:
 
 ### Secrets
 
-Secrets have to be registered inside seki drone project settings. Inside drone project settings [https://docs.drone.io/user-guide/pipeline/secrets/](Drone docs)
+Secrets have to be registered inside seki drone project settings. Inside drone project settings [Drone docs](https://docs.drone.io/user-guide/pipeline/secrets/)
 
 ### Cron
 
