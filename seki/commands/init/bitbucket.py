@@ -18,14 +18,14 @@ def find_bitbucket_repository(email, user, password):
     )
 
     try:
-        click.echo("Finding run project in bitbucket...")
+        click.echo("Finding seki project in bitbucket...")
         repository = Repository.find_repository_by_name_and_owner(
             repository_name="seki",
             client=bitbucket
         )
     except HTTPError:
         click.echo("Project not found")
-        click.echo("Creating project run...")
+        click.echo("Creating project seki...")
 
         repository = Repository.create(
             payload=RepositoryPayload({
