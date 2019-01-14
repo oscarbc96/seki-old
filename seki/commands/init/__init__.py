@@ -4,6 +4,7 @@ from sys import exit
 import click
 
 from .bitbucket import command as bitbucket
+from .github import command as github
 from ...conf import REPOSITORY_PATH
 
 
@@ -17,3 +18,4 @@ def cli():
 
 
 cli.add_command(bitbucket)
+cli.add_command(github)
