@@ -1,3 +1,4 @@
+# https://medium.com/@hakluke/how-to-setup-an-automated-sub-domain-takeover-scanner-for-all-bug-bounty-programs-in-5-minutes-3562eb621db3
 clone:
   disable: true
 kind: pipeline
