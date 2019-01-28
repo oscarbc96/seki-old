@@ -1,0 +1,46 @@
+clone:
+  disable: true
+kind: pipeline
+name: default
+steps:
+- name: obtain bugbounties domains
+  image: alpine:latest
+  commands:
+  - wget https://raw.githubusercontent.com/arkadiyt/bounty-targets-data/master/data/wildcards.txt
+  - cat wildcards.txt | sed 's/^*.//g' | grep -v '*' > wildcards_without_stars.txt
+
+- name: run subfinder
+  image: oscarbc/subfinder.subfinder:latest
+  commands:
+  - while read -r host; do
+  -   file=$host"_subfinder.out"
+  -   subfinder -o $file -d $host || true
+  - done < wildcards_without_stars.txt
+  - cat *.out > all_subdomains.lst
+
+- name: run subjack
+  image: oscarbc/haccer.subjack:latest
+  commands:
+  - subjack -w all_subdomains.lst -v -a -m -o subjack.out
+
+- name: create tar
+  image: alpine:latest
+  commands:
+  - tar czf output.tar.gz .
+
+- name: telegram notificaton
+  image: appleboy/drone-telegram:latest
+  settings:
+    document:
+    - output.tar.gz
+    format: markdown
+    message: >
+      {{#success build.status}}
+          {{build.number}}: ✅ `{{commit.message}}` 🚁 [See build]({{build.link}})
+      {{else}}
+          {{build.number}}: ❌ `{{commit.message}}` 🚁 [See build]({{build.link}})
+      {{/success}}
+    to:
+      from_secret: telegram_to
+    token:
+      from_secret: telegram_token
