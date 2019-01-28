@@ -125,6 +125,11 @@ Secrets have to be registered inside seki drone project settings. Inside drone p
 
 To run pipelines periodically the system uses cron jobs from Drone. Seki creates a new branch and enables cron job for that new branch.
 
+
+## Related projects
+
+[https://github.com/anshumanbh/kubebot](https://github.com/anshumanbh/kubebot)
+
 ## Thanks
 
 I would like to thank Drone to open source their project.
