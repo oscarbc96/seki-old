@@ -8,7 +8,11 @@ from seki.utils.git_cli import checkout, commit, create_branch, get_repo, push
 
 
 def get_input_args():
-    return " ".join(sys.argv)
+    return " ".join(sys.argv[1:])
+
+
+def get_input_args_and_timestamp():
+    return get_input_args() + " - " + datetime.now().isoformat()
 
 
 def prepare_project(cron):
@@ -17,7 +21,7 @@ def prepare_project(cron):
     checkout(repo, "master")
 
     if cron:
-        branch_name_encoded = string_to_b64(get_input_args() + " - " + datetime.now().isoformat(" ", "seconds"))
+        branch_name_encoded = string_to_b64(get_input_args_and_timestamp())
 
         create_branch(repo, branch_name_encoded)
 
@@ -39,7 +43,7 @@ def append_header_to_drone_yml(header):
 
 
 def commit_changes():
-    input_args = get_input_args()
+    input_args = get_input_args_and_timestamp()
 
     append_header_to_drone_yml(input_args)
 

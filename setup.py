@@ -26,7 +26,7 @@ VERSION = None
 REQUIRES = ["click", "GitPython", "pyyaml", "requests", "tabulate"]
 
 # What packages are optional?
-DEV_REQUIRES = ["black", "isort", "twine"]
+DEV_REQUIRES = ["black", "flake8", "isort", "twine"]
 
 # The rest you shouldn"t have to touch too much :)
 # ------------------------------------------------

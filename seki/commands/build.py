@@ -21,7 +21,6 @@ def _list():
                 [
                     {
                         "Command": build["message"],
-                        "Created": datetime.utcfromtimestamp(build["created"]).isoformat(),
                         "Build": f"{DRONE_PROJECT}/{build['number']}",
                     }
                     for build in builds

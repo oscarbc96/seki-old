@@ -4,7 +4,7 @@ from sys import exit
 
 import click
 
-from seki import __version__
+from seki.__version__ import __version__
 from seki.commands.build import _build
 from seki.commands.cron import _cron
 from seki.commands.drone import _drone
