@@ -1,37 +1,14 @@
 import sys
 from datetime import datetime
-from hashlib import md5
 
-import click
-
-from ..conf import DRONE_PATH
-from ..utils.drone import run as run_drone
-from ..utils.git_cli import get_repo, commit, push, create_branch, checkout, get_repo_path_from_origin
+from seki.conf import DRONE_PATH
+from seki.utils.drone import Drone
+from seki.utils.encodings import md5, string_to_b64
+from seki.utils.git_cli import checkout, commit, create_branch, get_repo, push
 
 
-def generate_header():
-    current_time = datetime.now().isoformat(" ", "seconds")
-
-    args = " ".join(sys.argv)
-
-    return args + " - " + current_time
-
-
-def add_drone_cron(repository, branch, cron_expr):
-    click.echo("Creating cron job in drone...")
-
-    result = run_drone([
-        "cron",
-        "add",
-        "--branch",
-        branch,
-        repository,
-        branch,  # name for cron
-        cron_expr
-    ])
-
-    if result != "":
-        click.echo("Not able to activate repository in drone")
+def get_input_args():
+    return " ".join(sys.argv)
 
 
 def prepare_project(cron):
@@ -40,17 +17,11 @@ def prepare_project(cron):
     checkout(repo, "master")
 
     if cron:
-        branch_name = generate_header()
+        branch_name_encoded = string_to_b64(get_input_args() + " - " + datetime.now().isoformat(" ", "seconds"))
 
-        branch_name_hash = md5(branch_name.encode("utf-8")).hexdigest()
+        create_branch(repo, branch_name_encoded)
 
-        create_branch(repo, branch_name_hash)
-
-        checkout(repo, branch_name_hash)
-
-        repo_path = get_repo_path_from_origin(repo)
-
-        add_drone_cron(repo_path, branch_name_hash, cron)
+        Drone().cron_create(md5(branch_name_encoded), cron, branch_name_encoded)
 
 
 def append_header_to_drone_yml(header):
@@ -68,12 +39,14 @@ def append_header_to_drone_yml(header):
 
 
 def commit_changes():
-    header = generate_header()
+    input_args = get_input_args()
 
-    append_header_to_drone_yml(header)
+    append_header_to_drone_yml(input_args)
 
     repo = get_repo()
 
-    commit(repo, header)
+    commit_hash = commit(repo, input_args)
 
     push(repo)
+
+    return commit_hash

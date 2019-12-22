@@ -1,7 +1,10 @@
 import os
 from pathlib import Path
 
-home = Path.home()
-
-REPOSITORY_PATH = os.path.join(home, ".seki")
-DRONE_PATH = os.path.join(REPOSITORY_PATH, ".drone.yml")
+REPOSITORY_PATH = Path.home() / ".seki"
+DRONE_PATH = REPOSITORY_PATH / ".drone.yml"
+DRONE_SERVER = os.environ["DRONE_SERVER"]
+DRONE_TOKEN = os.environ["DRONE_TOKEN"]
+SEKI_PROJECT_OWNER = os.environ["SEKI_PROJECT_OWNER"]
+SEKI_PROJECT_REPO = os.environ["SEKI_PROJECT_REPO"]
+DRONE_PROJECT = f"{DRONE_SERVER}/{SEKI_PROJECT_OWNER}/{SEKI_PROJECT_REPO}"

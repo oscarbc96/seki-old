@@ -1,3 +1,3 @@
-from .cli import cli
+from seki.cli import cli
 
 cli()

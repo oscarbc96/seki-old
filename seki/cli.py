@@ -4,30 +4,26 @@ from sys import exit
 
 import click
 
-from .__version__ import __version__
-from .commands.drone import cli as drone
-from .commands.init import cli as init
-from .commands.run import cli as run
-from .commands.template import cli as template
+from seki import __version__
+from seki.commands.build import _build
+from seki.commands.cron import _cron
+from seki.commands.drone import _drone
+from seki.commands.repo import _repo
+from seki.commands.run import _run
+from seki.commands.template import _template
 
 
 def check_requirements():
     ok = True
 
-    requirements = [
-        "git",
-        "drone"
-    ]
+    requirements = ["git"]
 
     for requirement in requirements:
         if which(requirement) is None:
             ok = False
             click.echo(f"Missing tool: {requirement}")
 
-    env_vars = [
-        "DRONE_SERVER",
-        "DRONE_TOKEN"
-    ]
+    env_vars = ["DRONE_SERVER", "DRONE_TOKEN", "SEKI_PROJECT_OWNER", "SEKI_PROJECT_REPO"]
 
     for var in env_vars:
         if var not in os.environ:
@@ -45,10 +41,12 @@ def cli():
     check_requirements()
 
 
-cli.add_command(init)
-cli.add_command(drone)
-cli.add_command(run)
-cli.add_command(template)
+cli.add_command(_repo)
+cli.add_command(_drone)
+cli.add_command(_cron)
+cli.add_command(_build)
+cli.add_command(_run)
+cli.add_command(_template)
 
 if __name__ == "__main__":
     cli()

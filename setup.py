@@ -11,7 +11,7 @@ import os
 import sys
 from shutil import rmtree
 
-from setuptools import find_packages, setup, Command
+from setuptools import Command, find_packages, setup
 
 # Package meta-data.
 NAME = "seki"
@@ -23,18 +23,10 @@ REQUIRES_PYTHON = ">=3.7.0"
 VERSION = None
 
 # What packages are required for this module to be executed?
-REQUIRES = [
-    "click",
-    "GitPython",
-    "pyyaml",
-    "pybitbucket"
-]
+REQUIRES = ["click", "GitPython", "pyyaml", "requests", "tabulate"]
 
 # What packages are optional?
-DEV_REQUIRES = [
-    "flake8",
-    "twine"
-]
+DEV_REQUIRES = ["black", "isort", "twine"]
 
 # The rest you shouldn"t have to touch too much :)
 # ------------------------------------------------
@@ -109,13 +101,9 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(),
-    entry_points={
-        "console_scripts": ["seki=seki.cli:cli"],
-    },
+    entry_points={"console_scripts": ["seki=seki.cli:cli"]},
     install_requires=REQUIRES,
-    extras_require={
-        "dev": DEV_REQUIRES,
-    },
+    extras_require={"dev": DEV_REQUIRES},
     include_package_data=True,
     license="MIT",
     classifiers=[
@@ -126,10 +114,8 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy"
+        "Programming Language :: Python :: Implementation :: PyPy",
     ],
     # $ setup.py publish support.
-    cmdclass={
-        "upload": UploadCommand,
-    },
+    cmdclass={"upload": UploadCommand},
 )

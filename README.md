@@ -14,8 +14,6 @@ Seki has been created to automatically generate `drone.yml` files to run securit
 
 ## Installation
 
-1. Install [Drone CLI](https://docs.drone.io/cli/install/)
-2. Install seki
 ```bash
 pip install seki
 ```
