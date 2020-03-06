@@ -14,4 +14,4 @@ pyyaml==5.2
 requests==2.22.0
 smmap2==2.0.5             # via gitdb2
 tabulate==0.8.6
-urllib3==1.25.7           # via requests
+urllib3==1.25.8           # via requests
